@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  web:
+    depends_on: 
+      - api
+    build: ./client
+    ports:
+      - 3000:3000
+    environment:
+      NEXT_API_URL: http://localhost:4000
+
+    develop:
+      watch:
+        - path: ./client/package.json
+          action: rebuild
+        - path: ./client/package-lock.json
+          action: rebuild
+        - path: ./client
+          target: /app
+          action: sync
+
+  api: 
+    build: ./server
+    ports: 
+      - 4000:4000
+
+    # Update the environment to use MongoDB Atlas
+    environment: 
+      MONGODB_URI: mongodb+srv://jawadbughlani:jawadbughlani@cluster0.iwzo3rh.mongodb.net/
+
+    develop:
+      watch:
+        - path: ./server/package.json
+          action: rebuild
+        - path: ./server/package-lock.json
+          action: rebuild
+        - path: ./server
+          target: /app
+          action: sync
+
+# Remove the entire db service
+# Remove the volumes section
